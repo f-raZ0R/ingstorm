@@ -24,7 +24,15 @@ import net.fraZ0R.ingstorm.common.BlockProximity;
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity extends LivingEntity {
 	@Shadow public abstract void playSound(SoundEvent sound, float volume, float pitch);
+
+	@Shadow public abstract double getHeightOffset();
+
 	@Unique int counter = 0;
+	/**
+	 * {@link TagKey} for extremely hot biomes
+	 *
+	 * @author Oliver-makes-code
+	 * */
 	@Unique TagKey<Biome> HOT = TagKey.of(Registry.BIOME_KEY, new Identifier(Ingstorm.modid, "hot"));
 
 	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType, World world) {
@@ -34,7 +42,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void doNetherDamage(CallbackInfo ci) {
-		if (world.getBiome(getBlockPos()).isIn(HOT) && !BlockProximity.isSafe(getBlockPos(), world)) {
+		if (world.getBiome(getBlockPos()).isIn(HOT) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getHeightOffset()), world))) {
 			applyDamage(DamageSource.OUT_OF_WORLD, 0.05f);
 			counter += 1;
 			counter %= 10;

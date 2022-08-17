@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public class BlockProximity {
 
     /**
-     *  {@link TagKey}s for different ranges
+     * {@link TagKey}s for different ranges
      *
      * @author Oliver-makes-code
      * */
