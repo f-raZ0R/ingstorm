@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 public class Ingstorm implements ModInitializer {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("ingstorm");
-	//woo global variables
-	public static int counter = 0;
 	@Override
 	public void onInitialize() {
 
