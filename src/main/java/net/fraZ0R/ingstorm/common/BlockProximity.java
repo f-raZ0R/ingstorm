@@ -1,43 +1,52 @@
 package net.fraZ0R.ingstorm.common;
 
+import net.fraZ0R.ingstorm.Ingstorm;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.Block;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class BlockProximity {
 
-    public static boolean isSafe(BlockPos pos, World world,Block block, int range)
-    {
-        /*ASSUMPTIONS MADE (THAT COMPAT WITH MODS THAT BREAK THESE ASSUMPTIONS WILL HAVE TO HANDLE):
-        THE PLAYER IS 1X2x1. (supporting pehkui is a headache that is currently out of scope)
-        BLOCKS ARE 1 BLOCK BIG.
-        NO USER WOULD WANT TO SPECIFICALLY CHECK FOR A SPECIFIC BLOCKSTATE (ok this one is obviously wrong, but I don't want to deal with the headache yet)*/
-        int blockX = pos.getX() - range;
-        int blockY = pos.getY() - range;
-        int blockZ = pos.getZ() - range;
+    /**
+     * {@link TagKey}s for different ranges
+     *
+     * @author Oliver-makes-code
+     * */
+    public static TagKey<Block> RANGE_0 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_0"));
+    public static TagKey<Block> RANGE_2 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_2"));
+    public static TagKey<Block> RANGE_4 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_4"));
+    public static TagKey<Block> RANGE_8 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_8"));
 
-        //hmm, today I will make a triply-nested for loop that is called every single tick :clueless:
-        for(;blockX<=pos.getX()+range; blockX++)
-        {
-            for(;blockY<=pos.getY()+range+1; blockY++)
-            {
-                for(;blockZ<=pos.getZ()+range;blockZ++)
-                {
-                    BlockPos checkPos = new BlockPos(blockX, blockY, blockZ);
-                    if(world.getBlockState(checkPos).getBlock().equals(block))
-                    {
-                        return true;
-                    }
-                }
-                blockZ = pos.getZ() - range;
+    public static boolean isSafe(BlockPos pos, World world) {
+        // Check range 0
+        if (world.getBlockState(pos).isIn(RANGE_0)) {
+            return true;
+        }
+
+        // Get an iterable of all BlockPoses in an 8x8 cube
+        Iterable<BlockPos> iterate = BlockPos.iterate(
+                pos.down(8).south(8).west(8),
+                pos.up(8).north(8).east(8)
+        );
+
+        // Iterate through all those BlockPoses
+        for (BlockPos current : iterate) {
+            // check if within 2 blocks
+            if (current.isWithinDistance(pos, 2) && world.getBlockState(current).isIn(RANGE_2)) {
+                return true;
             }
-            blockY = pos.getY() - range;
+            // Check if within 4 blocks
+            if (current.isWithinDistance(pos, 4) && world.getBlockState(current).isIn(RANGE_4)) {
+                return true;
+            }
+            // Check if within 8 blocks
+            if (current.isWithinDistance(pos, 8) && world.getBlockState(current).isIn(RANGE_8)) {
+                return true;
+            }
         }
         return false;
     }
-
-
-
-
-
 }
