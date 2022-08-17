@@ -42,7 +42,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void doNetherDamage(CallbackInfo ci) {
-		if (world.getBiome(getBlockPos()).isIn(HOT) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getHeightOffset()), world))) {
+		if (world.getBiome(getBlockPos()).isIn(HOT) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getStandingEyeHeight()), world))) {
 			applyDamage(DamageSource.OUT_OF_WORLD, 0.05f);
 			counter += 1;
 			counter %= 10;
