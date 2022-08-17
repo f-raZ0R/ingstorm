@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:nether_portal_frame",
+    "minecraft:nether_bricks"
+  ]
+}
