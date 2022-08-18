@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.Inject;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.block.Blocks;
 import net.fraZ0R.ingstorm.common.BlockProximity;
 
 @Mixin(PlayerEntity.class)
@@ -33,7 +32,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	 *
 	 * @author Oliver-makes-code
 	 * */
-	@Unique TagKey<Biome> HOT = TagKey.of(Registry.BIOME_KEY, new Identifier(Ingstorm.modid, "hot"));
+	@Unique TagKey<Biome> CORROSIVE = TagKey.of(Registry.BIOME_KEY, new Identifier(Ingstorm.modid, "corrosive"));
 
 	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
@@ -42,7 +41,8 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void doNetherDamage(CallbackInfo ci) {
-		if (world.getBiome(getBlockPos()).isIn(HOT) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getStandingEyeHeight()), world))) {
+
+		if (world.getBiome(getBlockPos()).isIn(CORROSIVE) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getStandingEyeHeight()), world))) {
 			applyDamage(DamageSource.OUT_OF_WORLD, 0.05f);
 			counter += 1;
 			counter %= 10;

@@ -26,24 +26,24 @@ public class BlockProximity {
             return true;
         }
 
-        // Get an iterable of all BlockPoses in an 8x8 cube
+        // Get an iterable of all BlockPoses in an 9x9 cube
         Iterable<BlockPos> iterate = BlockPos.iterate(
-                pos.down(8).south(8).west(8),
-                pos.up(8).north(8).east(8)
+                pos.down(9).south(9).west(9),
+                pos.up(9).north(9).east(9)
         );
 
         // Iterate through all those BlockPoses
         for (BlockPos current : iterate) {
             // check if within 2 blocks
-            if (current.isWithinDistance(pos, 2) && world.getBlockState(current).isIn(RANGE_2)) {
+            if (current.isWithinDistance(pos, 3) && world.getBlockState(current).isIn(RANGE_2)) {
                 return true;
             }
             // Check if within 4 blocks
-            if (current.isWithinDistance(pos, 4) && world.getBlockState(current).isIn(RANGE_4)) {
+            if (current.isWithinDistance(pos, 5) && world.getBlockState(current).isIn(RANGE_4)) {
                 return true;
             }
             // Check if within 8 blocks
-            if (current.isWithinDistance(pos, 8) && world.getBlockState(current).isIn(RANGE_8)) {
+            if (current.isWithinDistance(pos, 9) && world.getBlockState(current).isIn(RANGE_8)) {
                 return true;
             }
         }

@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    "minecraft:nether_portal_frame",
-    "minecraft:nether_bricks"
+    "minecraft:nether_portal",
+    "minecraft:nether_bricks",
+    "minecraft:nether_quartz_ore"
   ]
 }
