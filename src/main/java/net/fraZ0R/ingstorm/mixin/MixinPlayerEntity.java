@@ -45,6 +45,12 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 		super(entityType, world);
 	}
 
+	private static final DamageSource CORROSION = new DamageSource("ingstorm.corrosion") {{
+		setBypassesArmor();
+		setUnblockable();
+	}};
+
+
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	private void doNetherDamage(CallbackInfo ci) {
@@ -67,7 +73,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 				increaseStat(Stats.DAMAGE_ABSORBED, Math.round(oldAbs-getAbsorptionAmount()));
 				if(realDamage >= getHealth())
 				{
-					damage(DamageSource.OUT_OF_WORLD, realDamage);
+					damage(CORROSION, realDamage);
 				}
 				else
 				{

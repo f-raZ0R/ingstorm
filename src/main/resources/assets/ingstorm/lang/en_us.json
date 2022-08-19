@@ -2,6 +2,7 @@
    "ingstorm.midnightconfig.title": "Ingstorm",
    "ingstorm.midnightconfig.restart": "§c§lAll of the options below require a restart",
    "ingstorm.midnightconfig.biomeDamage": "Biome Damage",
-   "ingstorm.midnightconfig.biomeDamage.tooltip": "How much damage to do per tick in relevant biomes.\n (1 tick = 20 seconds)"
+   "ingstorm.midnightconfig.biomeDamage.tooltip": "How much damage to do per tick in relevant biomes.\n (1 tick = 20 seconds)",
+   "death.attack.ingstorm.corrosion": "%s was unable to survive the toxic atmosphere."
 
 }
