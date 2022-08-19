@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ingstorm",
-  "version": "0.0.0",
+  "version": "${version}",
 
   "name": "Ingstorm",
   "description": "Adds passive damage to the Nether ALA Metroid Prime 2",
@@ -9,8 +9,8 @@
     "fraZ0R"
   ],
   "contact": {
-    "homepage": "",
-    "sources": "https://github.com/f-raZ0R/ingstorm"
+    "sources": "https://github.com/f-raZ0R/ingstorm",
+    "issues": "https://github.com/f-raZ0R/ingstorm/issues"
   },
 
   "license": "CC0-1.0",
@@ -30,7 +30,8 @@
     "fabricloader": ">=0.14.6",
     "fabric": "*",
     "minecraft": "~1.19",
-    "java": ">=17"
+    "java": ">=17",
+    "midnightlib": ">=0.4.0"
   },
   "suggests": {
     "another-mod": "*"

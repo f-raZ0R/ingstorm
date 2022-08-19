@@ -1,12 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:quartz_block",
-    "minecraft:quartz_stairs",
-    "minecraft:quartz_slab",
-    "minecraft:smooth_quartz_stairs",
-    "minecraft:smooth_quartz_slab",
-    "minecraft:chiseled_quartz_block",
-    "minecraft:quartz_bricks"
+    "minecraft:beacon"
   ]
 }

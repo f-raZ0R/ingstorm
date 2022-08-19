@@ -26,7 +26,7 @@ public class BlockProximity {
             return true;
         }
 
-        // Get an iterable of all BlockPoses in an 9x9 cube
+        // Get an iterable of all BlockPoses in a 9x9 cube
         Iterable<BlockPos> iterate = BlockPos.iterate(
                 pos.down(9).south(9).west(9),
                 pos.up(9).north(9).east(9)

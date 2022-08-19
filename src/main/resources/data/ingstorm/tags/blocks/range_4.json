@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:polished_blackstone_bricks",
-    "minecraft:cracked_polished_blackstone_bricks"
+    "minecraft:netherite_block"
   ]
 }
