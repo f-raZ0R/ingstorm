@@ -2,6 +2,7 @@ package net.fraZ0R.ingstorm.mixin;
 
 import net.fraZ0R.ingstorm.Ingstorm;
 import net.fraZ0R.ingstorm.common.IngstormConfig;
+import net.minecraft.block.Block;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +32,8 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	@Shadow public abstract boolean isInvulnerableTo(DamageSource damageSource);
 
-	public float corDamage = IngstormConfig.biomeDamage;
+	public float biomeDamage = IngstormConfig.biomeDamage;
+	public float blockDamage = IngstormConfig.blockDamage;
 
 	@Unique int counter = 0;
 	/**
@@ -40,6 +42,16 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	 * @author Oliver-makes-code
 	 * */
 	@Unique TagKey<Biome> CORROSIVE = TagKey.of(Registry.BIOME_KEY, new Identifier(Ingstorm.modid, "corrosive"));
+
+	@Unique TagKey<Block> RANGE_0 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_0"));
+	@Unique TagKey<Block> RANGE_2 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_2"));
+	@Unique TagKey<Block> RANGE_4 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_4"));
+	@Unique TagKey<Block> RANGE_8 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "range_8"));
+	@Unique TagKey<Block> UNSAFE_RANGE_0 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "unsaferange_0"));
+	@Unique TagKey<Block> UNSAFE_RANGE_2 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "unsaferange_2"));
+	@Unique TagKey<Block> UNSAFE_RANGE_4 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "unsaferange_4"));
+	@Unique TagKey<Block> UNSAFE_RANGE_8 = TagKey.of(Registry.BLOCK_KEY, new Identifier(Ingstorm.modid, "unsaferange_8"));
+
 
 	protected MixinPlayerEntity(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
@@ -51,36 +63,47 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	}};
 
 
+	private void doDamage(float amount) {
+		counter += 1;
+		counter %= 20;
+		if(counter%10 == 0) {
+			playSound(SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5F, 1F);
+		}
+		if(counter == 0) {
+			float realDamage = Math.max((20* amount)-getAbsorptionAmount(), 0.0f);
+			float oldAbs = getAbsorptionAmount();
+			setAbsorptionAmount(Math.max(getAbsorptionAmount()-(20* amount), 0.0f));
+			increaseStat(Stats.DAMAGE_ABSORBED, Math.round(oldAbs-getAbsorptionAmount()));
+			if(realDamage >= getHealth())
+			{
+				damage(CORROSION, realDamage);
+			}
+			else
+			{
+				setHealth(getHealth() - realDamage);
+				increaseStat(Stats.DAMAGE_TAKEN, Math.round(realDamage));
+			}
+		}
+	}
+
+
 
 	@Inject(method = "tick", at = @At("HEAD"))
-	private void doNetherDamage(CallbackInfo ci) {
-		//Damage source type is temporarily out_of_world, to ignore iFrames.
-		if (canTakeDamage() && world.getBiome(getBlockPos()).isIn(CORROSIVE) && !(BlockProximity.isSafe(getBlockPos(), world) || BlockProximity.isSafe(getBlockPos().up((int)getStandingEyeHeight()), world))) {
+	private void damageCheck(CallbackInfo ci) {
+		//Why did I think this if statement was a good idea
+		if (canTakeDamage() && world.getBiome(getBlockPos()).isIn(CORROSIVE) &&
+				!( BlockProximity.isInRange(getBlockPos(), world, RANGE_0, 0) || BlockProximity.isInRange(getBlockPos(), world, RANGE_2, 2) || BlockProximity.isInRange(getBlockPos(), world, RANGE_4, 4) || BlockProximity.isInRange(getBlockPos(), world, RANGE_8, 8) ||
+				BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, RANGE_0, 0) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, RANGE_2, 2) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, RANGE_4, 4) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, RANGE_8, 8))) {
 
+			doDamage(biomeDamage);
+		}
 
+		//overly long monster of an if statement... 2!
+		if (canTakeDamage() &&
+				( (BlockProximity.isInRange(getBlockPos(), world, UNSAFE_RANGE_0, 0)) || (BlockProximity.isInRange(getBlockPos(), world, UNSAFE_RANGE_2, 2)) || BlockProximity.isInRange(getBlockPos(), world, UNSAFE_RANGE_4, 4) || BlockProximity.isInRange(getBlockPos(), world, UNSAFE_RANGE_8, 8) ||
+						BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, UNSAFE_RANGE_0, 0) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, UNSAFE_RANGE_2, 2) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, UNSAFE_RANGE_4, 4) || BlockProximity.isInRange(getBlockPos().up((int)getStandingEyeHeight()), world, UNSAFE_RANGE_8, 8))) {
 
-
-			counter += 1;
-			counter %= 20;
-			if(counter%10 == 0) {
-				playSound(SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5F, 1F);
-			}
-			if(counter == 0) {
-				//ok screw it im keeping damage tilt for now but im damaging the player less often now.
-				float realDamage = Math.max((20*corDamage)-getAbsorptionAmount(), 0.0f);
-				float oldAbs = getAbsorptionAmount();
-				setAbsorptionAmount(Math.max(getAbsorptionAmount()-(20*corDamage), 0.0f));
-				increaseStat(Stats.DAMAGE_ABSORBED, Math.round(oldAbs-getAbsorptionAmount()));
-				if(realDamage >= getHealth())
-				{
-					damage(CORROSION, realDamage);
-				}
-				else
-				{
-					setHealth(getHealth() - realDamage);
-					increaseStat(Stats.DAMAGE_TAKEN, Math.round(realDamage));
-				}
-			}
+			doDamage(blockDamage);
 		}
 	}
 }

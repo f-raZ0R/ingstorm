@@ -8,6 +8,7 @@ public class IngstormConfig extends MidnightConfig{
 
     @MidnightConfig.Comment public static MidnightConfig.Comment restart;
     @Entry(min=0) public static float biomeDamage = 0.05f;
+    @Entry(min=0) public static float blockDamage = 0.10f;
 
 
 }
