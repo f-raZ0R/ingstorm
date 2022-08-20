@@ -6,5 +6,4 @@
    "ingstorm.midnightconfig.blockDamage": "Block Damage",
    "ingstorm.midnightconfig.blockDamage.tooltip": "How much damage to do per tick within proximity to relevant blocks.\n (1 tick = 20 seconds)",
    "death.attack.ingstorm.corrosion": "%s was unable to survive the toxic atmosphere."
-
 }
